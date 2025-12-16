@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杉本拓海 - デジタル名刺</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            top: -250px;
+            right: -250px;
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+            bottom: -200px;
+            left: -200px;
+            border-radius: 50%;
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: slideDown 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .name {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        .title {
+            font-size: 14px;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 24px 0;
+            animation: expandWidth 0.8s ease-out 0.4s both;
+        }
+
+        @keyframes expandWidth {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .info-section {
+            margin-bottom: 32px;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(4px);
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--gray);
+            min-width: 80px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .info-value {
+            color: var(--light);
+            font-size: 14px;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .info-value a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .info-value a:hover {
+            color: #22d3ee;
+            text-decoration: underline;
+        }
+
+        .qr-section {
+            text-align: center;
+            animation: fadeIn 0.8s ease-out 0.8s both;
+        }
+
+        .qr-title {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 16px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+
+        #qrcode {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        #qrcode canvas {
+            border-radius: 8px;
+        }
+
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray);
+            animation: fadeIn 0.8s ease-out 1s both;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 32px 24px;
+            }
+
+            .name {
+                font-size: 28px;
+            }
+
+            .info-item {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .info-label {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <h1 class="name">杉本 拓海</h1>
+            <p class="title">Takumi Sugimoto</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="info-section">
+            <div class="info-item">
+                <span class="info-label">所属</span>
+                <span class="info-value">東京工科大学<br>コンピュータサイエンス学科<br>先進情報専攻</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">学年</span>
+                <span class="info-value">学部1年</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">研究</span>
+                <span class="info-value">AIに関する研究を行っています</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value"><a href="mailto:eritotaku0802@gmail.com">eritotaku0802@gmail.com</a></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">GitHub</span>
+                <span class="info-value"><a href="https://github.com/c0a25132ea" target="_blank">github.com/c0a25132ea</a></span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="qr-section">
+            <p class="qr-title">連絡先をスキャン</p>
+            <div id="qrcode"></div>
+        </div>
+
+        <div class="footer">
+            どうぞよろしくお願いいたします
+        </div>
+    </div>
+
+    <script>
+        // vCard形式で連絡先情報を作成
+        const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:杉本拓海
+N:杉本;拓海;;;
+ORG:東京工科大学;コンピュータサイエンス学科 先進情報専攻
+TITLE:学部1年
+EMAIL:eritotaku0802@gmail.com
+URL:https://github.com/c0a25132ea
+NOTE:AIに関する研究を行っています
+END:VCARD`;
+
+        // QRコードを生成
+        new QRCode(document.getElementById("qrcode"), {
+            text: vcard,
+            width: 200,
+            height: 200,
+            colorDark: "#0f172a",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>
